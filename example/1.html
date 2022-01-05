@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      #wrapper {
+        width: 100%;
+        transform: translate(0, 0);
+      }
+      .container {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <script>
+      function setStyle(el, sty) {
+        for (let key in sty) {
+          if (sty.hasOwnProperty(key) && key != null) {
+            el.style[key] = sty[key];
+          }
+        }
+      }
+
+      const wrapEle = document.getElementById("wrapper");
+      // 预设滚动执行的时间
+      const scrollTime = 700
+      wrapEle.style.transition = `transform ${scrollTime}ms`;
+      const { height: screenHeight } = document.body.getBoundingClientRect();
+      // 初始化多个容器
+      for (let i = 0; i < 10; i++) {
+        const ele = document.createElement("div");
+        // 设置高度和背景色
+        ele.innerText = i
+        setStyle(ele, {
+          background: i % 2 === 0 ? "pink" : "green",
+          height: screenHeight + "px"
+        })
+        wrapEle.appendChild(ele)
+      }
+      
+      // 记录当前展示的哪一屏
+      let screenIndex = 0
+      // 设置监听
+      let canScroll = true
+      wrapEle.addEventListener("wheel", function(e) {
+        // 第一屏和最后一屏不能继续上滑/下滑,加个判断
+        const slideUp = e.deltaY < 0
+        if(screenIndex === 0 && slideUp) return
+        if(screenIndex === 9 && !slideUp) return
+
+        let index = screenIndex
+        let y = -screenHeight * index
+        if(slideUp) {
+          y += screenHeight
+          index--
+        } else {
+          y -= screenHeight
+          index++
+        }
+        if(canScroll) {
+          screenIndex = index
+          wrapEle.style.transform = `translate(0, ${y}px)`
+          // 标识当前正在滚动
+          canScroll = false
+          // 滚动完成后重置标识
+          setTimeout(function() {
+            canScroll = true
+          }, scrollTime)
+        }
+      })
+    </script>
+  </body>
+</html>

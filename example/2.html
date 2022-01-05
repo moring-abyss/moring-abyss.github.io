@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+      }
+      #wrapper {
+        width: 100%;
+        transform: translate(0, 0);
+      }
+      .container {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <script>
+      function setStyle(el, sty) {
+        for (let key in sty) {
+          if (sty.hasOwnProperty(key) && key != null) {
+            el.style[key] = sty[key];
+          }
+        }
+      }
+
+      const wrapEle = document.getElementById("wrapper");
+      // 预设滚动执行的时间
+      const scrollTime = 700;
+      wrapEle.style.transition = `transform ${scrollTime}ms`;
+      const { height: screenHeight } = document.body.getBoundingClientRect();
+      // 初始化多个容器
+      for (let i = 0; i < 10; i++) {
+        const ele = document.createElement("div");
+        // 设置高度和背景色
+        ele.innerText = i;
+        setStyle(ele, {
+          background: i % 2 === 0 ? "pink" : "green",
+          height: screenHeight + "px",
+        });
+        wrapEle.appendChild(ele);
+      }
+
+      // 记录当前展示的哪一屏
+      let screenIndex = 0;
+      let canScroll = true;
+      let scrollings = [];
+      let prevTime = new Date().getTime();
+      // 设置监听
+      wrapEle.addEventListener("wheel", function (e) {
+        if (scrollings.length > 149) {
+          scrollings.shift();
+        }
+        var value = e.wheelDelta || -e.deltaY || -e.detail;
+        var curTime = new Date().getTime();
+        scrollings.push(Math.abs(value));
+        // 上面这段逻辑很好理解，记录本次（包括本次）之前的150次的滑动距离
+
+        var timeDiff = curTime - prevTime;
+        prevTime = curTime;
+        if (timeDiff > 200) {
+          scrollings = [];
+        }
+        // 这段逻辑是用来处理当本次事件执行与上次执行超过200ms时就可以认为这是第二次鼠标/触控板滑动触发
+        // Q：200这个时间怎么定的，不太理解
+
+        // getAverage函数是从scrollings中取出指定索引往后的所有元素的平均数
+        // 那整个逻辑就好理解了，fullPage的作者通过记录前150次的滚动距离，并通过计算最后70次的平均滚动距离和最后10次的平均滚动距离，如果最后10次的不小于最后70次说明非预测性滚动
+        var averageEnd = getAverage(scrollings, 10);
+        var averageMiddle = getAverage(scrollings, 70);
+        var isAccelerating = averageEnd >= averageMiddle;
+
+        // 第一屏和最后一屏不能继续上滑/下滑,加个判断
+        const slideUp = e.deltaY < 0;
+        if (screenIndex === 0 && slideUp) return;
+        if (screenIndex === 9 && !slideUp) return;
+
+        let index = screenIndex;
+        let y = -screenHeight * index;
+        if (slideUp) {
+          y += screenHeight;
+          index--;
+        } else {
+          y -= screenHeight;
+          index++;
+        }
+        if (canScroll && isAccelerating) {
+          screenIndex = index;
+          wrapEle.style.transform = `translate(0, ${y}px)`;
+          // 标识当前正在滚动
+          canScroll = false;
+          // 滚动完成后重置标识
+          setTimeout(function () {
+            canScroll = true;
+          }, scrollTime);
+        }
+      });
+
+      function getAverage(elements, number) {
+        var sum = 0;
+        var lastElements = elements.slice(Math.max(elements.length - number, 1));
+        for (var i = 0; i < lastElements.length; i++) {
+          sum = sum + lastElements[i];
+        }
+        return Math.ceil(sum / number);
+      }
+    </script>
+  </body>
+</html>
