@@ -37,7 +37,7 @@
       // 预设滚动执行的时间
       const scrollTime = 700;
       wrapEle.style.transition = `transform ${scrollTime}ms`;
-      const { height: screenHeight } = document.body.getBoundingClientRect();
+      let screenHeight = document.body.getBoundingClientRect().height;
       // 初始化多个容器
       for (let i = 0; i < 10; i++) {
         const ele = document.createElement("div");
@@ -107,12 +107,42 @@
 
       function getAverage(elements, number) {
         var sum = 0;
-        var lastElements = elements.slice(Math.max(elements.length - number, 1));
+        var lastElements = elements.slice(
+          Math.max(elements.length - number, 1)
+        );
         for (var i = 0; i < lastElements.length; i++) {
           sum = sum + lastElements[i];
         }
         return Math.ceil(sum / number);
       }
+      let resizeTimeout;
+      window.addEventListener("resize", function (e) {
+        clearTimeout(resizeTimeout);
+
+        resizeTimeout = setTimeout(function () {
+          const pos = {
+            height:
+              "innerHeight" in window
+                ? window.innerHeight
+                : document.documentElement.offsetHeight,
+            width: window.innerWidth,
+          };
+          screenHeight = pos.height;
+
+          let y = screenIndex * screenHeight;
+
+          Array.prototype.forEach.call(wrapEle.children, child => {
+            setStyle(child, {
+              height: screenHeight + "px",
+            });
+          })
+          wrapEle.style.transition = `transform 0ms`;
+          wrapEle.style.transform = `translate(0px, ${-y}px)`;
+          resizeTimeout = setTimeout(function(){
+            wrapEle.style.transition = `transform ${scrollTime}ms`;
+          }, 200)
+        }, 200);
+      });
     </script>
   </body>
 </html>
