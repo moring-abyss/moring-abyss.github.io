@@ -24,7 +24,7 @@
 <meta property="og:description" content="React-18.0.0  面试经常问到 setState 是同步还是异步，这里就这个问题研究下源码实现，调试并记录。 setState 实现ReactFiberClassComponent.new调用 classComponentUpdater.enqueueSetState，该方法内部实现会在 fiber 节点上挂载一个任务队列：updateQueue，数据结构参考： 12345678910">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-09T05:00:00.000Z">
-<meta property="article:modified_time" content="2022-01-12T12:25:34.561Z">
+<meta property="article:modified_time" content="2022-01-13T09:39:01.635Z">
 <meta property="article:author" content="Moring Abyss">
 <meta property="article:tag" content="React学习笔记">
 <meta name="twitter:card" content="summary_large_image">
@@ -243,11 +243,16 @@
 </blockquote>
 <h2 id="几个关于-setState-的问题的总结"><a href="#几个关于-setState-的问题的总结" class="headerlink" title="几个关于 setState 的问题的总结"></a>几个关于 setState 的问题的总结</h2><ol>
 <li>setState 是同步还是异步<br>内部实现更新机制是异步，单纯的 setState 是同步方法，所以无法获取到最新的 state</li>
-<li>setState(callback), callback 中为何可以取到最新的 state 值<br>笔记中忘记补了，这里大概描述下，setState 中在 update（即 fiber.updateQueue.shared.pending）上，在触发新的render阶段中回调才被执行，此时state已被更新;</li>
-<li>为何setTimeout中也可以取得最新的state<br>原理在于event loop，当setTimeout回调执行时React已经更新完毕</li>
+<li>setState(callback), callback 中为何可以取到最新的 state 值<br>笔记中忘记补了，这里大概描述下，setState 中在 update（即 fiber.updateQueue.shared.pending）上，在触发新的 render 阶段中回调才被执行，此时 state 已被更新;</li>
+<li>为何 setTimeout 中也可以取得最新的 state<br>原理在于 event loop，当 setTimeout 回调执行时 React 已经更新完毕</li>
 </ol>
 <blockquote>
-<p>ps: 仔细看了下源码，貌似并不一定。flushSyncCallbacks中当发生异常时，未执行的更新队列会通过ReactScheduler重新调度（调度的部分后面做详细笔记），此时可能会有问题。<br>pps: 当前笔记仅针对ReactDom.render，createRoot采用的是concurrent模式<br>setTimeout使用需谨慎</p>
+<p>ps: 仔细看了下源码，貌似并不一定。flushSyncCallbacks 中当发生异常时，未执行的更新队列会通过 ReactScheduler 重新调度（调度的部分后面做详细笔记），此时可能会有问题。<br>pps: 当前笔记仅针对 ReactDom.render，createRoot 采用的是 concurrent 模式<br>setTimeout 使用需谨慎</p>
+</blockquote>
+<h2 id="补充笔记"><a href="#补充笔记" class="headerlink" title="补充笔记"></a>补充笔记</h2><p>之前看的不够详细,enqueueSetState -&gt; scheduleUpdateOnFiber, scheduleUpdateOnFiber 中有一步判断会决定 setStat 是否立即执行更新<br>所以在setTimeout中连续执行setState时不会合并执行</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">scheduleUpdateOnFiber</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">  fiber: Fiber,</span></span><br><span class="hljs-params"><span class="hljs-function">  lane: Lane,</span></span><br><span class="hljs-params"><span class="hljs-function">  eventTime: number</span></span><br><span class="hljs-params"><span class="hljs-function"></span>): <span class="hljs-title">FiberRoot</span> | <span class="hljs-title">null</span> </span>&#123;<br>  <span class="hljs-comment">// ...</span><br>    <span class="hljs-keyword">if</span> (<br>      lane === SyncLane &amp;&amp;<br>      executionContext === NoContext &amp;&amp;<br>      (fiber.mode &amp; ConcurrentMode) === NoMode &amp;&amp;<br>      <span class="hljs-comment">// Treat `act` as if it&#x27;s inside `batchedUpdates`, even in legacy mode.</span><br>      !(__DEV__ &amp;&amp; ReactCurrentActQueue.isBatchingLegacy)<br>    ) &#123;<br>      <span class="hljs-comment">// Flush the synchronous work now, unless we&#x27;re already working or inside</span><br>      <span class="hljs-comment">// a batch. This is intentionally inside scheduleUpdateOnFiber instead of</span><br>      <span class="hljs-comment">// scheduleCallbackForFiber to preserve the ability to schedule a callback</span><br>      <span class="hljs-comment">// without immediately flushing it. We only do this for user-initiated</span><br>      <span class="hljs-comment">// updates, to preserve historical behavior of legacy mode.</span><br>      resetRenderTimer();<br>      flushSyncCallbacksOnlyInLegacyMode();<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> root;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>TODO: 待学习部分，ReactAct咋执行的，代码看麻了，看编译原理，学习基础去了</p>
 </blockquote>
 
             </div>
@@ -275,6 +280,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/01/13/a/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
