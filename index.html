@@ -44,6 +44,10 @@
 
 <!-- 自定义样式保持在最底部 -->
 
+  
+<link rel="stylesheet" href="/css/common.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
@@ -179,15 +183,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/01/13/a/" target="_self">
-          
+        <a href="/2022/01/19/8/" target="_self">
+          编译原理入门笔记
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/01/13/a/" target="_self">
+        <a href="/2022/01/19/8/" target="_self">
           
-          export function scheduleUpdateOnFiber(   fiber: Fiber,   lane: Lane,   eventTime: number ): FiberRoot | null {   &#x2F;&#x2F; ...     if (       lane &#x3D;&#x3D;&#x3D; SyncLane &amp;&amp;       executionContext &#x3D;&#x3D;&#x3D; NoContext &amp;&amp;
+          简述词法分析简单理解为：把一段代码解析分割成一个一个的词法记号（这里称之为Token）  从中文角度理解词法分析  “我热爱编程”，理解这句话首先需要分词，拆解为“我”，“热爱”，“编程”；这个过程即词法分析  拆解需要一定的规则从编程语言的角度，这个规则一般定义为：关键词，运算符，标识符，数字字面量，字符串字面量，+-*&#x2F;操作符，以及, ; {} ()这样的符号之类  正则文法符合正则文法的表达
         </a>
       </p>
 
@@ -195,12 +199,19 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-01-13 17:31" pubdate>
-              2022-01-13
+            <time datetime="2022-01-19 11:22" pubdate>
+              2022-01-19
             </time>
           </div>
         
         
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/">编译原理</a>
+            
+          </div>
         
       </div>
     </article>
@@ -252,15 +263,48 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/12/22/1/" target="_self">
-          阿里云视频点播sdk扩展
+        <a href="/2022/01/09/6/" target="_self">
+          2022学习规划
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/12/22/1/" target="_self">
+        <a href="/2022/01/09/6/" target="_self">
           
-          SDK：Javascript SDK   version-1.5.2阿里云视频点播Javascript SDK文档 问题：该版本不支持指定单个文件暂停上传 or 指定目标文件开始上传。sdk提供的几个操作单文件的api支持不到这么细节的操作，deleteFile&#x2F;cancelFile&#x2F;resumeFile 源码解析：  提取sdk代码中的一些关键枚举值  123456789101112131415
+          技术深入  React深入学习  Vue深入学习  书籍阅读  高性能网站建设指南  非暴力沟通  极客时间课程学习  编译原理之美  编译原理实战课  手把手带你写一门编程语言  操作系统实战45讲  浏览器工作原理与实践  互联网人的英语私教课
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-09 13:00" pubdate>
+              2022-01-09
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/12/22/2/" target="_self">
+          How to disable predictive scrolling
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/12/22/2/" target="_self">
+          
+          最近做一个全屏滚动的效果，类似 fullPage，之所以没用一个因为 fullPage 的开源协议是 GPL，另一个是需求上没有 fullPage 那么多兼容支持，就想着自己写一个。 想法挺好，大致的实现思路也简单：  body 或者外层套一个 div 设置高宽 100vw,100vh，并且禁止溢出 每一屏一个容器 container，并且使用一个 wrapper 容器包裹起来 初始化时设置 co
         </a>
       </p>
 
@@ -292,15 +336,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/12/22/2/" target="_self">
-          How to disable predictive scrolling
+        <a href="/2021/12/22/1/" target="_self">
+          阿里云视频点播sdk扩展
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/12/22/2/" target="_self">
+        <a href="/2021/12/22/1/" target="_self">
           
-          最近做一个全屏滚动的效果，类似 fullPage，之所以没用一个因为 fullPage 的开源协议是 GPL，另一个是需求上没有 fullPage 那么多兼容支持，就想着自己写一个。 想法挺好，大致的实现思路也简单：  body 或者外层套一个 div 设置高宽 100vw,100vh，并且禁止溢出 每一屏一个容器 container，并且使用一个 wrapper 容器包裹起来 初始化时设置 co
+          SDK：Javascript SDK   version-1.5.2阿里云视频点播Javascript SDK文档 问题：该版本不支持指定单个文件暂停上传 or 指定目标文件开始上传。sdk提供的几个操作单文件的api支持不到这么细节的操作，deleteFile&#x2F;cancelFile&#x2F;resumeFile 源码解析：  提取sdk代码中的一些关键枚举值  123456789101112131415
         </a>
       </p>
 

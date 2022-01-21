@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input id="int" /><button id="btn">calc</button>
+    <script>
+      const intEle = document.getElementById("int");
+      const btnEle = document.getElementById("btn");
+      const simpleCalcCompiler = new SimpleCalcCompiler();
+      btnEle.addEventListener("click", function (e) {
+        const code = intEle.value;
+        simpleCalcCompiler.read(code);
+        console.log(simpleCalcCompiler)
+      });
+
+      function SimpleCalcCompiler() {
+        // 声明所有枚举状态
+        this.enum = {
+          INITIAL: "init",
+          PLUS: "plus",
+          MINUS: "minus",
+          IMUL: "imul",
+          DIVIDE: "divide",
+          NUMBER: "number",
+        };
+      }
+      SimpleCalcCompiler.prototype.read = function (code) {
+        this.state = this.enum.INITIAL;
+        this.tokenText = "";
+        this.tokenList = [];
+        let ch;
+        Array.prototype.forEach.call(code, (char) => {
+          ch = charx  
+          this.tokenize(char)
+        });
+        if(this.tokenText.length > 0) {
+          this.initToken(ch)
+        }
+      };
+      SimpleCalcCompiler.prototype.tokenize = function (char) {
+        // 词法分析
+        switch (this.state) {
+          case this.enum.INITIAL:
+            // 重新确定后续状态
+            this.state = this.initToken(char, true)
+            break;
+          case this.enum.PLUS:
+            // 退出当前状态
+            this.state = this.initToken(char)
+            break;
+          case this.enum.MINUS:
+            // 退出当前状态
+            this.state = this.initToken(char)
+            break;
+          case this.enum.IMUL:
+            // 退出当前状态
+            this.state = this.initToken(char)
+            break;
+          case this.enum.DIVIDE:
+            // 退出当前状态
+            this.state = this.initToken(char)
+            break;
+          case this.enum.NUMBER:
+            if(this.getTokenType(char) === this.enum.NUMBER) {
+              // 保持当前状态
+              this.tokenText += char
+            } else {
+              // 退出当前状态
+              this.state = this.initToken(char)
+            }
+            break;
+        }
+      };
+      SimpleCalcCompiler.prototype.initToken = function (char) {
+        if(this.tokenText.length > 0) {
+          this.tokenList.push({
+            text: this.tokenText,
+            type: this.getTokenType(this.tokenText)
+          })
+          this.tokenText = ""
+        }
+        this.tokenText = char
+        return this.getTokenType(char)
+      };
+      SimpleCalcCompiler.prototype.getTokenType = function (char, init) {
+        // 获取token类型
+        switch (char) {
+          case "+":
+            return this.enum.PLUS;
+          case "-":
+            return this.enum.MINUS;
+          case "*":
+            return this.enum.IMUL;
+          case "/":
+            return this.enum.DIVIDE;
+          default:
+            if (!isNaN(char)) {
+              return this.enum.NUMBER;
+            }
+            if(init) {
+              return this.enum.INITIAL
+            }
+            throw new Error("程序编译异常")
+        }
+      };
+    </script>
+  </body>
+</html>
