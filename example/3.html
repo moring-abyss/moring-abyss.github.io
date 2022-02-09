@@ -145,22 +145,22 @@
         additive(tokens) {
           let child1 = this.multiplicative(tokens);
           let node = child1;
-          let token = tokens[0];
-          if (child1 && token) {
-            if (
-              token.type === SimpleLexer.enum.PLUS ||
-              token.type === SimpleLexer.enum.MINUS
-            ) {
-              token = tokens.shift();
-              let child2 = this.additive(tokens);
-              if (child2) {
+          if (child1) {
+            while (true) {
+              let token = tokens[0];
+              if (
+                token &&
+                (token.type === SimpleLexer.enum.PLUS ||
+                  token.type === SimpleLexer.enum.MINUS)
+              ) {
+                token = tokens.shift();
+                let child2 = this.multiplicative(tokens);
                 node = new ASTNode(ASTNode.enum.Additive, token.text);
                 node.addChild(child1);
                 node.addChild(child2);
+                child1 = node;
               } else {
-                throw new Error(
-                  "invalid additive expression, expecting the right part."
-                );
+                break;
               }
             }
           }
@@ -255,6 +255,10 @@
           case ASTNode.enum.IntLiteral:
             result = parseInt(node.text);
           default:
+        }
+        // 展示计算过程
+        if(value1 && value2) {
+          console.log(`${value1}${node.text}${value2}=${result}`)
         }
         return result;
       }
