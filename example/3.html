@@ -4,10 +4,43 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+      }
+      #root {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        outline: none;
+        background-color: #000000;
+        color: #ffffff;
+      }
+      .row {
+        display: flex;
+      }
+      .line-number {
+        min-width: 30px;
+        width: 30px;
+        text-align: center;
+        line-height: 20px;
+      }
+      .line {
+        flex: 1;
+        line-height: 20px;
+        outline: none;
+        border: none;
+        background-color: #000000;
+        color: #ffffff;
+      }
+    </style>
   </head>
   <body>
-    <input id="int" /><button id="btn">calc</button>
+    <div id="root"></div>
     <script>
       /**
        * 词法分析类
@@ -22,18 +55,23 @@
           DIVIDE: "divide", // /
           NUMBER: "number",
         };
-        read(code) {
+        code = "";
+        read(char) {
+          this.code += char;
+        }
+        analysis() {
           this.state = SimpleLexer.enum.INITIAL;
           this.tokenText = "";
           this.tokenList = [];
           let ch;
-          Array.prototype.forEach.call(code, (char) => {
+          Array.prototype.forEach.call(this.code, (char) => {
             ch = char;
             this.tokenize(char);
           });
           if (this.tokenText.length > 0) {
             this.initToken(ch);
           }
+          this.code = "";
         }
         tokenize(char) {
           // 词法分析
@@ -155,9 +193,15 @@
               ) {
                 token = tokens.shift();
                 let child2 = this.multiplicative(tokens);
-                node = new ASTNode(ASTNode.enum.Additive, token.text);
-                node.addChild(child1);
-                node.addChild(child2);
+                if (child2) {
+                  node = new ASTNode(ASTNode.enum.Additive, token.text);
+                  node.addChild(child1);
+                  node.addChild(child2);
+                } else {
+                  throw new Error(
+                    "invalid multiplicative expression, expecting the right part."
+                  );
+                }
                 child1 = node;
               } else {
                 break;
@@ -257,25 +301,84 @@
           default:
         }
         // 展示计算过程
-        if(value1 && value2) {
-          console.log(`${value1}${node.text}${value2}=${result}`)
+        if (value1 && value2) {
+          console.log(`${value1}${node.text}${value2}=${result}`);
         }
         return result;
       }
 
-      const intEle = document.getElementById("int");
-      const btnEle = document.getElementById("btn");
+      class REPL {
+        constructor(root) {
+          this.root = root;
+          root.addEventListener("click", () => {
+            this.editEle && this.editEle.focus();
+          });
+          this.onKeyDown = this.onKeyDown.bind(this);
+          this.onInput = this.onInput.bind(this);
+          this.addRow();
+        }
+        addRow(rs) {
+          this.editEle && (this.editEle.readOnly = true);
+          const row = document.createElement("div");
+          row.className = "row";
+          const left = document.createElement("div");
+          left.className = "line-number";
+          left.innerHTML = rs ? "" : ">";
+          const right = document.createElement("input");
+          right.className = "line";
+          row.appendChild(left);
+          row.appendChild(right);
+          root.appendChild(row);
+          right.focus();
+
+          this.editEle = right;
+          right.addEventListener("keydown", this.onKeyDown);
+          right.addEventListener("input", this.onInput);
+        }
+        onKeyDown(e) {
+          if (e.keyCode === 13) {
+            this.editEle.removeEventListener("keydown", this.onKeyDown);
+            this.addRow(true);
+            try {
+              const result = this.exec && this.exec();
+              this.editEle.value = result;
+            } catch (e) {
+              console.error(e);
+              this.editEle.value = e.message;
+              this.editEle.style.color = "red";
+            }
+            this.addRow();
+            e.preventDefault();
+          }
+        }
+        onInput(e) {
+          this.read && this.read(e.data);
+        }
+        onRead(fn) {
+          this.read = fn;
+        }
+        onExec(fn) {
+          this.exec = fn;
+        }
+      }
+
+      const repl = new REPL(document.getElementById("root"));
       const simpleLexer = new SimpleLexer();
       const simpleCalculator = new SimpleCalculator();
-      btnEle.addEventListener("click", function (e) {
-        const code = intEle.value;
+
+      repl.onRead((char) => {
+        // 载入脚本代码
+        simpleLexer.read(char);
+      });
+      repl.onExec(() => {
+        // 执行脚本
         // 词法分析
-        simpleLexer.read(code);
+        simpleLexer.analysis();
         // 语法分析
         let astNode = simpleCalculator.parse(simpleLexer.tokenList);
         // 计算
         const result = evaluate(astNode);
-        console.log(result);
+        return result;
       });
     </script>
   </body>
