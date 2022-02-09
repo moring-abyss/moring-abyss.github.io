@@ -9,105 +9,270 @@
   <body>
     <input id="int" /><button id="btn">calc</button>
     <script>
-      const intEle = document.getElementById("int");
-      const btnEle = document.getElementById("btn");
-      const simpleCalcCompiler = new SimpleCalcCompiler();
-      btnEle.addEventListener("click", function (e) {
-        const code = intEle.value;
-        simpleCalcCompiler.read(code);
-        console.log(simpleCalcCompiler)
-      });
-
-      function SimpleCalcCompiler() {
-        // 声明所有枚举状态
-        this.enum = {
+      /**
+       * 词法分析类
+       */
+      class SimpleLexer {
+        // 所有枚举状态
+        static enum = {
           INITIAL: "init",
-          PLUS: "plus",
-          MINUS: "minus",
-          IMUL: "imul",
-          DIVIDE: "divide",
+          PLUS: "plus", // +
+          MINUS: "minus", // -
+          STAR: "star", // *
+          DIVIDE: "divide", // /
           NUMBER: "number",
         };
-      }
-      SimpleCalcCompiler.prototype.read = function (code) {
-        this.state = this.enum.INITIAL;
-        this.tokenText = "";
-        this.tokenList = [];
-        let ch;
-        Array.prototype.forEach.call(code, (char) => {
-          ch = charx  
-          this.tokenize(char)
-        });
-        if(this.tokenText.length > 0) {
-          this.initToken(ch)
+        read(code) {
+          this.state = SimpleLexer.enum.INITIAL;
+          this.tokenText = "";
+          this.tokenList = [];
+          let ch;
+          Array.prototype.forEach.call(code, (char) => {
+            ch = char;
+            this.tokenize(char);
+          });
+          if (this.tokenText.length > 0) {
+            this.initToken(ch);
+          }
         }
-      };
-      SimpleCalcCompiler.prototype.tokenize = function (char) {
-        // 词法分析
-        switch (this.state) {
-          case this.enum.INITIAL:
-            // 重新确定后续状态
-            this.state = this.initToken(char, true)
-            break;
-          case this.enum.PLUS:
-            // 退出当前状态
-            this.state = this.initToken(char)
-            break;
-          case this.enum.MINUS:
-            // 退出当前状态
-            this.state = this.initToken(char)
-            break;
-          case this.enum.IMUL:
-            // 退出当前状态
-            this.state = this.initToken(char)
-            break;
-          case this.enum.DIVIDE:
-            // 退出当前状态
-            this.state = this.initToken(char)
-            break;
-          case this.enum.NUMBER:
-            if(this.getTokenType(char) === this.enum.NUMBER) {
-              // 保持当前状态
-              this.tokenText += char
-            } else {
+        tokenize(char) {
+          // 词法分析
+          switch (this.state) {
+            case SimpleLexer.enum.INITIAL:
+              // 重新确定后续状态
+              this.state = this.initToken(char, true);
+              break;
+            case SimpleLexer.enum.PLUS:
+            case SimpleLexer.enum.MINUS:
+            case SimpleLexer.enum.STAR:
+            case SimpleLexer.enum.DIVIDE:
               // 退出当前状态
-              this.state = this.initToken(char)
+              this.state = this.initToken(char);
+              break;
+            case SimpleLexer.enum.NUMBER:
+              if (this.getTokenType(char) === SimpleLexer.enum.NUMBER) {
+                // 保持当前状态
+                this.tokenText += char;
+              } else {
+                // 退出当前状态
+                this.state = this.initToken(char);
+              }
+              break;
+          }
+        }
+        initToken(char) {
+          if (this.tokenText.length > 0) {
+            this.tokenList.push({
+              text: this.tokenText,
+              type: this.getTokenType(this.tokenText),
+            });
+            this.tokenText = "";
+          }
+          this.tokenText = char;
+          return this.getTokenType(char);
+        }
+        getTokenType(char, init) {
+          // 获取token类型
+          switch (char) {
+            case "+":
+              return SimpleLexer.enum.PLUS;
+            case "-":
+              return SimpleLexer.enum.MINUS;
+            case "*":
+              return SimpleLexer.enum.STAR;
+            case "/":
+              return SimpleLexer.enum.DIVIDE;
+            default:
+              if (!isNaN(char)) {
+                return SimpleLexer.enum.NUMBER;
+              }
+              if (init) {
+                return SimpleLexer.enum.INITIAL;
+              }
+              throw new Error("程序编译异常");
+          }
+        }
+      }
+      /**
+       * AST节点
+       * @params type 类型
+       * @params text 文本
+       * @params parent 父节点
+       * @params children 子节点
+       */
+      class ASTNode {
+        static enum = {
+          Programm: "Programm", //程序入口，根节点
+          IntDeclaration: "IntDeclaration", //整型变量声明
+          ExpressionStmt: "ExpressionStmt", //表达式语句，即表达式后面跟个分号
+          AssignmentStmt: "AssignmentStmt", //赋值语句
+
+          Primary: "Primary", //基础表达式
+          Multiplicative: "Multiplicative", //乘法表达式
+          Additive: "Additive", //加法表达式
+
+          Identifier: "Identifier", //标识符
+          IntLiteral: "IntLiteral", //整型字面量
+        };
+        constructor(type, text) {
+          this.type = type;
+          this.text = text;
+          this.parent = null;
+          this.children = [];
+        }
+
+        addChild(child) {
+          this.children.push(child);
+          child.parent = this;
+        }
+      }
+      /**
+       * 语法分析
+       */
+      class SimpleCalculator {
+        parse(tokens) {
+          // 创建ast根节点
+          let astRootNode = new ASTNode(ASTNode.enum.Programm, "Calculator");
+          let child = this.additive(tokens);
+          if (child != null) {
+            astRootNode.addChild(child);
+          }
+          return astRootNode;
+        }
+        /**
+         * 语法解析-加法表达式
+         */
+        additive(tokens) {
+          let child1 = this.multiplicative(tokens);
+          let node = child1;
+          let token = tokens[0];
+          if (child1 && token) {
+            if (
+              token.type === SimpleLexer.enum.PLUS ||
+              token.type === SimpleLexer.enum.MINUS
+            ) {
+              token = tokens.shift();
+              let child2 = this.additive(tokens);
+              if (child2) {
+                node = new ASTNode(ASTNode.enum.Additive, token.text);
+                node.addChild(child1);
+                node.addChild(child2);
+              } else {
+                throw new Error(
+                  "invalid additive expression, expecting the right part."
+                );
+              }
+            }
+          }
+          return node;
+        }
+        /**
+         * 语法解析-乘法表达式
+         */
+        multiplicative(tokens) {
+          let child1 = this.primary(tokens);
+          let node = child1;
+          let token = tokens[0];
+          if (child1 && token) {
+            // 匹配完一个基础表达式后如果token还有值则继续匹配,否则直接返回基础表达式(在这个简单的计算器中也就是表示数值的ast节点)
+            if (
+              token.type === SimpleLexer.enum.STAR ||
+              token.type === SimpleLexer.enum.DIVIDE
+            ) {
+              token = tokens.shift();
+              let child2 = this.multiplicative(tokens);
+              if (child2) {
+                // 顺利匹配成功，返回乘法表达式的ast节点
+                node = new ASTNode(ASTNode.enum.Multiplicative, token.text);
+                node.addChild(child1);
+                node.addChild(child2);
+              } else {
+                // 没有匹配到对应运算符，这里就是解析异常了，简单理解为 1 *，缺失表达式右边的部分
+                throw new Error(
+                  "invalid multiplicative expression, expecting the right part."
+                );
+              }
+            }
+          }
+          return node;
+        }
+        /**
+         * 语法解析-基础表达式
+         * 这里只做数值判断，类似括号，标识符等不考虑
+         */
+        primary(tokens) {
+          let node = null;
+          // 预读token
+          let token = tokens[0];
+          if (token) {
+            if (token.type === SimpleLexer.enum.NUMBER) {
+              // 如果是数值
+              token = tokens.shift();
+              node = new ASTNode(ASTNode.enum.IntLiteral, token.text);
+            }
+          }
+          return node;
+        }
+      }
+
+      /**
+       * 求值
+       */
+      function evaluate(node) {
+        let result = 0;
+        let child1;
+        let child2;
+        let value1;
+        let value2;
+        switch (node.type) {
+          case ASTNode.enum.Programm:
+            node.children.forEach((child) => {
+              result = evaluate(child);
+            });
+            break;
+          case ASTNode.enum.Additive:
+            child1 = node.children[0];
+            value1 = evaluate(child1);
+            child2 = node.children[1];
+            value2 = evaluate(child2);
+            if (node.text === "+") {
+              result = value1 + value2;
+            } else {
+              result = value1 - value2;
             }
             break;
-        }
-      };
-      SimpleCalcCompiler.prototype.initToken = function (char) {
-        if(this.tokenText.length > 0) {
-          this.tokenList.push({
-            text: this.tokenText,
-            type: this.getTokenType(this.tokenText)
-          })
-          this.tokenText = ""
-        }
-        this.tokenText = char
-        return this.getTokenType(char)
-      };
-      SimpleCalcCompiler.prototype.getTokenType = function (char, init) {
-        // 获取token类型
-        switch (char) {
-          case "+":
-            return this.enum.PLUS;
-          case "-":
-            return this.enum.MINUS;
-          case "*":
-            return this.enum.IMUL;
-          case "/":
-            return this.enum.DIVIDE;
+          case ASTNode.enum.Multiplicative:
+            child1 = node.children[0];
+            value1 = evaluate(child1);
+            child2 = node.children[1];
+            value2 = evaluate(child2);
+            if (node.text === "*") {
+              result = value1 * value2;
+            } else {
+              result = value1 / value2;
+            }
+            break;
+          case ASTNode.enum.IntLiteral:
+            result = parseInt(node.text);
           default:
-            if (!isNaN(char)) {
-              return this.enum.NUMBER;
-            }
-            if(init) {
-              return this.enum.INITIAL
-            }
-            throw new Error("程序编译异常")
         }
-      };
+        return result;
+      }
+
+      const intEle = document.getElementById("int");
+      const btnEle = document.getElementById("btn");
+      const simpleLexer = new SimpleLexer();
+      const simpleCalculator = new SimpleCalculator();
+      btnEle.addEventListener("click", function (e) {
+        const code = intEle.value;
+        // 词法分析
+        simpleLexer.read(code);
+        // 语法分析
+        let astNode = simpleCalculator.parse(simpleLexer.tokenList);
+        // 计算
+        const result = evaluate(astNode);
+        console.log(result);
+      });
     </script>
   </body>
 </html>
