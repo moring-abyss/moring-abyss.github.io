@@ -16,20 +16,20 @@
   <meta name="author" content="Moring Abyss">
   <meta name="keywords" content="">
   
-    <meta name="description" content="起因，和单位某大佬讨论当前公司后端所使用商品数据模型的问题，争论点在于要不要改，当然这个是由后端决定的，但思来想去我觉得我需要理解问题的根源。 每个公司对商城&#x2F;商品数据模型的设计可能不一样，但基本概念是一样的。 如果让我来设计一个数据模型，我应该怎么做？ 在商品信息数据化的过程中，商品的特性可以由多个属性以及对应的属性值来进行描述。这里涉及到两个程序开发中经常说的两个名词：spu,sku。sku：">
+    <meta name="description" content="yum安装jenkins添加jenkins repo sudo wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;jenkins.repo https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.repo  导入jenkins公钥 sudo rpm –import https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.io.ke">
 <meta property="og:type" content="article">
-<meta property="og:title" content="商品数据模型的自我复盘">
-<meta property="og:url" content="https://moring-abyss.github.io/2022/01/27/6/index.html">
+<meta property="og:title" content="jenkins">
+<meta property="og:url" content="https://moring-abyss.github.io/2022/02/24/9/index.html">
 <meta property="og:site_name" content="moring-abyss">
-<meta property="og:description" content="起因，和单位某大佬讨论当前公司后端所使用商品数据模型的问题，争论点在于要不要改，当然这个是由后端决定的，但思来想去我觉得我需要理解问题的根源。 每个公司对商城&#x2F;商品数据模型的设计可能不一样，但基本概念是一样的。 如果让我来设计一个数据模型，我应该怎么做？ 在商品信息数据化的过程中，商品的特性可以由多个属性以及对应的属性值来进行描述。这里涉及到两个程序开发中经常说的两个名词：spu,sku。sku：">
+<meta property="og:description" content="yum安装jenkins添加jenkins repo sudo wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;jenkins.repo https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.repo  导入jenkins公钥 sudo rpm –import https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.io.ke">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-27T06:15:55.884Z">
-<meta property="article:modified_time" content="2022-01-27T07:34:00.354Z">
+<meta property="article:published_time" content="2022-02-24T05:47:50.390Z">
+<meta property="article:modified_time" content="2022-02-25T08:46:30.838Z">
 <meta property="article:author" content="Moring Abyss">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>商品数据模型的自我复盘 - moring-abyss</title>
+  <title>jenkins - moring-abyss</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -167,7 +167,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="商品数据模型的自我复盘">
+            <span class="h2" id="subtitle" title="jenkins">
               
             </span>
 
@@ -177,8 +177,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-27 14:15" pubdate>
-        2022年1月27日 下午
+      <time datetime="2022-02-24 13:47" pubdate>
+        2022年2月24日 下午
       </time>
     </span>
   
@@ -214,13 +214,42 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">商品数据模型的自我复盘</h1>
+            <h1 style="display: none">jenkins</h1>
             
             <div class="markdown-body">
-              <p>起因，和单位某大佬讨论当前公司后端所使用商品数据模型的问题，争论点在于要不要改，当然这个是由后端决定的，但思来想去我觉得我需要理解问题的根源。</p>
-<p>每个公司对商城/商品数据模型的设计可能不一样，但基本概念是一样的。</p>
-<p>如果让我来设计一个数据模型，我应该怎么做？</p>
-<p>在商品信息数据化的过程中，商品的特性可以由多个属性以及对应的属性值来进行描述。<br>这里涉及到两个程序开发中经常说的两个名词：spu,sku。<br>sku：Stock Keeping Unit,库存量单位。<br>spu：Standard Product Unit，标准化产品单元，商品信息聚合的最小单位。</p>
+              <h1 id="yum安装jenkins"><a href="#yum安装jenkins" class="headerlink" title="yum安装jenkins"></a>yum安装jenkins</h1><h2 id="添加jenkins-repo"><a href="#添加jenkins-repo" class="headerlink" title="添加jenkins repo"></a>添加jenkins repo</h2><blockquote>
+<p>sudo wget -O /etc/yum.repos.d/jenkins.repo <a target="_blank" rel="noopener" href="https://pkg.jenkins.io/redhat-stable/jenkins.repo">https://pkg.jenkins.io/redhat-stable/jenkins.repo</a></p>
+</blockquote>
+<h2 id="导入jenkins公钥"><a href="#导入jenkins公钥" class="headerlink" title="导入jenkins公钥"></a>导入jenkins公钥</h2><blockquote>
+<p>sudo rpm –import <a target="_blank" rel="noopener" href="https://pkg.jenkins.io/redhat-stable/jenkins.io.key">https://pkg.jenkins.io/redhat-stable/jenkins.io.key</a></p>
+</blockquote>
+<h2 id="更新yum"><a href="#更新yum" class="headerlink" title="更新yum"></a>更新yum</h2><blockquote>
+<p>sudo yum upgrade</p>
+</blockquote>
+<h2 id="安装jdk"><a href="#安装jdk" class="headerlink" title="安装jdk"></a>安装jdk</h2><blockquote>
+<p>sudo yum install fontconfig java-11-openjdk</p>
+</blockquote>
+<h2 id="安装jenkins"><a href="#安装jenkins" class="headerlink" title="安装jenkins"></a>安装jenkins</h2><blockquote>
+<p>yum install jenkins</p>
+</blockquote>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><p>sudo systemctl enable jenkins<br>sudo systemctl start jenkins<br>sudo systemctl status jenkins</p>
+<h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><blockquote>
+<p>yum install git</p>
+</blockquote>
+<h2 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h2><blockquote>
+<p>rm -fv /etc/yum.repos.d/nodesource*<br>curl –silent –location <a target="_blank" rel="noopener" href="https://rpm.nodesource.com/setup_14.x">https://rpm.nodesource.com/setup_14.x</a> | sudo bash<br>yum install -y nodejs</p>
+</blockquote>
+<h2 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h2><p>这里不是很熟悉，所以选择了推荐的插件安装</p>
+<h3 id="su无法切换jenkins用户"><a href="#su无法切换jenkins用户" class="headerlink" title="su无法切换jenkins用户"></a>su无法切换jenkins用户</h3><blockquote>
+<p>执行 - vi /etc/passwd<br>找到jenkins那行，把/bin/false改成/bin/bash</p>
+</blockquote>
+<h3 id="无法clone代码"><a href="#无法clone代码" class="headerlink" title="无法clone代码"></a>无法clone代码</h3><blockquote>
+<p>jenkins用户加入root组<br>gpasswd -a root jenkins<br>vim /etc/sysconfig/jenkins; 修改配置：JENKINS_USER=”root”    JENKINS_GROUP=”root”<br>修改文件夹权限：chomd 777 &lt;文件夹名称&gt;</p>
+</blockquote>
+<h3 id="给jenkins用户添加sudo权限"><a href="#给jenkins用户添加sudo权限" class="headerlink" title="给jenkins用户添加sudo权限"></a>给jenkins用户添加sudo权限</h3><p>添加到sudo组或者wheel组</p>
+<blockquote>
+<p>usermod -a -G wheel jenkins<br>usermod -a -G sudo jenkins<br>sudo visudo -f /etc/sudoers<br>找到root    ALL=(ALL)       ALL，这行下添加代码<br>jenkins    ALL=(ALL)       NOPASSWD:ALL </p>
+</blockquote>
 
             </div>
             <hr>
@@ -236,6 +265,23 @@
                   
                 </p>
               
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/01/19/8/">
+                        <span class="hidden-mobile">编译原理学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
               
             </div>
 
