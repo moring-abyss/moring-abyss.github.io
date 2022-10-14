@@ -16,21 +16,22 @@
   <meta name="author" content="Moring Abyss">
   <meta name="keywords" content="">
   
-    <meta name="description" content="React-18.0.0ReactFiberHooks.new.js">
+    <meta name="description" content="该笔记的目的，追溯 ref 和 reactive 的底层实现。 参考：官网文档深入响应式系统 先不直接去看源码，自己先参考文档的思路实现，这里可以分成两个部分：  把一个普通对象封装成响应式对象，让我们可以监听到对象属性值的变更 依赖于上一步，在监听到变更时执行一些动作（例如更新视图）  如何封装响应式对象 在 JavaScript 中有两种劫持 property 访问的方式：getter &#x2F; s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="React-Hook原理">
-<meta property="og:url" content="https://moring-abyss.github.io/2022/01/19/7/index.html">
+<meta property="og:title" content="vue深入学习">
+<meta property="og:url" content="https://moring-abyss.github.io/2022/10/11/10/index.html">
 <meta property="og:site_name" content="moring-abyss">
-<meta property="og:description" content="React-18.0.0ReactFiberHooks.new.js">
+<meta property="og:description" content="该笔记的目的，追溯 ref 和 reactive 的底层实现。 参考：官网文档深入响应式系统 先不直接去看源码，自己先参考文档的思路实现，这里可以分成两个部分：  把一个普通对象封装成响应式对象，让我们可以监听到对象属性值的变更 依赖于上一步，在监听到变更时执行一些动作（例如更新视图）  如何封装响应式对象 在 JavaScript 中有两种劫持 property 访问的方式：getter &#x2F; s">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-19T03:13:39.446Z">
-<meta property="article:modified_time" content="2022-01-20T06:53:44.212Z">
+<meta property="article:published_time" content="2022-10-11T02:31:37.003Z">
+<meta property="article:modified_time" content="2022-10-14T06:32:25.042Z">
 <meta property="article:author" content="Moring Abyss">
-<meta property="article:tag" content="React学习笔记">
+<meta property="article:tag" content="vue">
+<meta property="article:tag" content="响应式系统设计">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>React-Hook原理 - moring-abyss</title>
+  <title>vue深入学习 - moring-abyss</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -168,7 +169,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="React-Hook原理">
+            <span class="h2" id="subtitle" title="vue深入学习">
               
             </span>
 
@@ -178,8 +179,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-19 11:13" pubdate>
-        2022年1月19日 上午
+      <time datetime="2022-10-11 10:31" pubdate>
+        2022年10月11日 上午
       </time>
     </span>
   
@@ -215,12 +216,26 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">React-Hook原理</h1>
+            <h1 style="display: none">vue深入学习</h1>
             
             <div class="markdown-body">
-              <blockquote>
-<p>React-18.0.0<br>ReactFiberHooks.new.js</p>
+              <p>该笔记的目的，追溯 ref 和 reactive 的底层实现。</p>
+<p>参考：官网文档<a target="_blank" rel="noopener" href="https://cn.vuejs.org/guide/extras/reactivity-in-depth.html#how-reactivity-works-in-vue">深入响应式系统</a></p>
+<p>先不直接去看源码，自己先参考文档的思路实现，这里可以分成两个部分：</p>
+<ol>
+<li>把一个普通对象封装成响应式对象，让我们可以监听到对象属性值的变更</li>
+<li>依赖于上一步，在监听到变更时执行一些动作（例如更新视图）</li>
+</ol>
+<h2 id="如何封装响应式对象"><a href="#如何封装响应式对象" class="headerlink" title="如何封装响应式对象"></a>如何封装响应式对象</h2><blockquote>
+<p>在 JavaScript 中有两种劫持 property 访问的方式：getter / setters 和 Proxies<br>Vue 3 中则使用了 Proxy 来创建响应式对象，仅将 getter / setter 用于 ref</p>
 </blockquote>
+<p>这一步实现，基本可以参考官网上的伪代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ref</span>(<span class="hljs-params">v</span>) </span>&#123;<br>  <span class="hljs-keyword">const</span> refObj = &#123;<br>    <span class="hljs-keyword">get</span> <span class="hljs-title">value</span>() &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>._value;<br>    &#125;,<br>    <span class="hljs-keyword">set</span> <span class="hljs-title">value</span>(<span class="hljs-params">newValue</span>) &#123;<br>      <span class="hljs-built_in">this</span>._value = newValue;<br>    &#125;,<br>  &#125;;<br>  refObj._value = v;<br>  <span class="hljs-keyword">return</span> refObj;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>tip: 增加_value 属性是为了避免直接给 value 赋值而递归调用 setter 造成堆栈溢出的异常</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">reactive</span>(<span class="hljs-params">obj</span>) </span>&#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Proxy</span>(obj, &#123;<br>    <span class="hljs-function"><span class="hljs-title">get</span>(<span class="hljs-params">target, key</span>)</span> &#123;<br>      <span class="hljs-keyword">return</span> target[key];<br>    &#125;,<br>    <span class="hljs-function"><span class="hljs-title">set</span>(<span class="hljs-params">target, key, value</span>)</span> &#123;<br>      target[key] = value;<br>    &#125;,<br>  &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -231,7 +246,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/React%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">React学习笔记</a>
+                      <a class="hover-with-bg" href="/tags/vue/">vue</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/">响应式系统设计</a>
                     
                   </div>
                 
