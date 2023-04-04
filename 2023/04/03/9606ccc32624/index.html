@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Moring Abyss">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Vue 是一个声明式的 UI 框架，简单来理解什么是声明式，即为你声明你要什么，不需要关心内部具体的实现，只需要得到结果。例如：这段代码在 vue 中表示一个绑定了点击事件的 div，不需要关心事件是如何绑定的 12345678910&lt;script setup&gt;&#x2F;&#x2F; 函数function handler() &amp;#123;  console.log(&quot;click&quot;)&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笔记：从零实现一个简单的vue-1">
+<meta property="og:url" content="https://moring-abyss.github.io/2023/04/03/9606ccc32624/index.html">
+<meta property="og:site_name" content="moring-abyss">
+<meta property="og:description" content="Vue 是一个声明式的 UI 框架，简单来理解什么是声明式，即为你声明你要什么，不需要关心内部具体的实现，只需要得到结果。例如：这段代码在 vue 中表示一个绑定了点击事件的 div，不需要关心事件是如何绑定的 12345678910&lt;script setup&gt;&#x2F;&#x2F; 函数function handler() &amp;#123;  console.log(&quot;click&quot;)&amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-03T03:14:57.296Z">
+<meta property="article:modified_time" content="2023-04-04T02:03:31.182Z">
+<meta property="article:author" content="Moring Abyss">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  <title>笔记：从零实现一个简单的vue-1 - moring-abyss</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+  
+<link rel="stylesheet" href="/css/common.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"moring-abyss.github.io","root":"/","version":"1.8.13","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>秋</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="笔记：从零实现一个简单的vue-1">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-04-03 11:14" pubdate>
+        2023年4月3日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">笔记：从零实现一个简单的vue-1</h1>
+            
+            <div class="markdown-body">
+              <p>Vue 是一个声明式的 UI 框架，简单来理解什么是声明式，即为你声明你要什么，不需要关心内部具体的实现，只需要得到结果。<br>例如：这段代码在 vue 中表示一个绑定了点击事件的 div，不需要关心事件是如何绑定的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script setup&gt;<br><span class="hljs-comment">// 函数</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">handler</span>(<span class="hljs-params"></span>) </span>&#123;<br>  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;click&quot;</span>)<br>&#125;<br>&lt;/script&gt;<br><br><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span></span><br><span class="xml">  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> @<span class="hljs-attr">click</span>=<span class="hljs-string">&quot;handler&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>而在命令式编程中，需要编写具体的事件绑定逻辑</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>document.querySelector(&quot;div&quot;).addEventListener(&quot;click&quot;, function() &#123;<br>console.log(&quot;click&quot;) &#125;)<br></code></pre></td></tr></table></figure>
+
+<p>Vue 只需要开发者描述真实的 DOM 节点树结构，隐藏了内部具体的实现。</p>
+<p>我们可以创建一个 JavaScript 对象来描述一个 DOM 元素结构，一个 DOM 节点的元素结构包含：</p>
+<ol>
+<li>标签名：div span a 等</li>
+<li>属性：如 name id class 等</li>
+<li>事件：click hover keydown 等</li>
+<li>层级结构：父子节点、兄弟节点</li>
+</ol>
+<p>转换为代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> vNode = &#123;<br>  <span class="hljs-comment">// 标签名称</span><br>  <span class="hljs-attr">tag</span>: <span class="hljs-string">&quot;div&quot;</span>,<br>  <span class="hljs-comment">// 标签属性</span><br>  <span class="hljs-attr">props</span>: &#123;<br>    <span class="hljs-attr">onClick</span>: handler,<br>  &#125;,<br>  <span class="hljs-comment">// 没有子节点</span><br>  <span class="hljs-attr">children</span>: [],<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>在理解了声明式 UI 编程后，我们需要实现一个编译器来把 DOM 元素的声明式代码转换为具体的 JavaScript 对象</p>
+<p>编译原理中的编译过程包含：词法分析、语法分析、语义分析、中间代码生成、优化、目标代码生成等步骤<br>将要实现的 Vue 模版编译器包含了两个个部分：</p>
+<ol>
+<li>parser-将模版字符串解析为模版 AST（词法分析、语法分析、语义分析）</li>
+<li>transformer-将模版 AST 转换为 JavaScript AST（生成代码）</li>
+</ol>
+<h1 id="实现tokenize"><a href="#实现tokenize" class="headerlink" title="实现tokenize"></a>实现tokenize</h1><p>首先是词法分析部分：</p>
+<blockquote>
+<p>ps: 此为简化版，不处理单闭合标签、各类异常情况以及复杂的 vue 语法等，类似&lt;&gt;&lt;/&gt; 、 &lt;tagName /&gt;<br>词法分析中，解析器会逐个读取字符，根据词法规则切分成一个个词法记号，即 Token</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>这是一段html代码<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>这一段代码可以切分为 3 个词法单元：</p>
+<ol>
+<li>开始标签：<div></li>
+<li>文本节点：这是一段 html 代码</li>
+<li>结束标签：</div></li>
+</ol>
+<p>这里定义一个有限状态机，通过不同状态的迁移来切分<br>可以参考 whatwg 关于<a href="https://html.spec.whatwg.org/multipage/parsing.html#parse-state" target="_blank" style="color: blue;text-decoration: underline;">html 解析器状态</a>的定义简化定义我们需要的各种状态：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> State = &#123;<br>  <span class="hljs-attr">initial</span>: <span class="hljs-number">1</span>, <span class="hljs-comment">// 初始状态</span><br>  <span class="hljs-attr">tagOpen</span>: <span class="hljs-number">2</span>, <span class="hljs-comment">// 标签开始状态</span><br>  <span class="hljs-attr">tagName</span>: <span class="hljs-number">3</span>, <span class="hljs-comment">// 标签名称状态</span><br>  <span class="hljs-attr">text</span>: <span class="hljs-number">4</span>, <span class="hljs-comment">// 文本状态</span><br>  <span class="hljs-attr">tagEnd</span>: <span class="hljs-number">5</span>, <span class="hljs-comment">// 结束标签状态</span><br>  <span class="hljs-attr">tagEndName</span>: <span class="hljs-number">6</span>, <span class="hljs-comment">// 结束标签名称状态</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>词法规则有了，状态定义好了，开始实现 tokenize</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> State = &#123;<br>  <span class="hljs-attr">initial</span>: <span class="hljs-number">1</span>, <span class="hljs-comment">// 初始状态</span><br>  <span class="hljs-attr">tagOpen</span>: <span class="hljs-number">2</span>, <span class="hljs-comment">// 标签开始状态</span><br>  <span class="hljs-attr">tagName</span>: <span class="hljs-number">3</span>, <span class="hljs-comment">// 标签名称状态</span><br>  <span class="hljs-attr">text</span>: <span class="hljs-number">4</span>, <span class="hljs-comment">// 文本状态</span><br>  <span class="hljs-attr">tagEnd</span>: <span class="hljs-number">5</span>, <span class="hljs-comment">// 结束标签状态</span><br>  <span class="hljs-attr">tagEndName</span>: <span class="hljs-number">6</span>, <span class="hljs-comment">// 结束标签名称状态</span><br>&#125;;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 模版字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return </span>返回Token数组</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tokenize</span>(<span class="hljs-params">str</span>) </span>&#123;<br>  <span class="hljs-comment">// 设置当前状态为初始状态</span><br>  <span class="hljs-keyword">let</span> currentState = State.initial;<br>  <span class="hljs-comment">// 保存token的数组</span><br>  <span class="hljs-keyword">const</span> tokens = [];<br>  <span class="hljs-comment">// 缓存当前读取的字符</span><br>  <span class="hljs-keyword">const</span> chars = [];<br>  <span class="hljs-comment">// 当模版字符串读取完毕后退出循环</span><br>  <span class="hljs-keyword">while</span> (str) &#123;<br>    <span class="hljs-comment">// 读取第一个字符</span><br>    <span class="hljs-keyword">const</span> char = str[<span class="hljs-number">0</span>];<br>    <span class="hljs-comment">// 匹配状态机当前处于哪一个状态</span><br>    <span class="hljs-keyword">switch</span> (currentState) &#123;<br>      <span class="hljs-keyword">case</span> State.initial:<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagOpen:<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagName:<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.text:<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagEnd:<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagEndName:<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>  &#125;<br>  <span class="hljs-comment">// 最后返回token数组</span><br>  <span class="hljs-keyword">return</span> tokens;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里已经大致缕清了思路，只需要按不同的状态去处理就行了。</p>
+<blockquote>
+<p>状态机当前处于初始状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (char === <span class="hljs-string">&#x27;&lt;&#x27;</span>) &#123;<br>  <span class="hljs-comment">// 状态机切换到标签开始状态</span><br>  currentState = State.tagOpen<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 初始状态下碰到其他字符一律当作文本节点处理</span><br>  <span class="hljs-comment">// 1. 切换到文本状态</span><br>  currentState = State.text<br>  <span class="hljs-comment">// 2. 将当前读取字符缓存</span><br>  chars.push(char)<br>&#125;<br><span class="hljs-comment">// 消费掉字符</span><br>str = str.slice(<span class="hljs-number">1</span>)<br><span class="hljs-keyword">break</span>;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>状态机当前处于标签开始状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;/&quot;</span>) &#123;<br>  <span class="hljs-comment">// 切换到结束标签状态</span><br>  currentState = State.tagEnd;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 1. 切换到标签名称状态</span><br>  currentState = State.tagName;<br>  <span class="hljs-comment">// 2. 缓存当前读取字符</span><br>  chars.push(char);<br>&#125;<br><span class="hljs-comment">// 消费掉该字符</span><br>str = str.slice(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>状态机当前处于标签名称状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&gt;&quot;</span>) &#123;<br>  <span class="hljs-comment">// 1. 遇到字符&gt;，说明标签闭合，切换到初始状态</span><br>  currentState = State.initial;<br>  <span class="hljs-comment">// 2. 把之前缓存的字符拼接并创建为一个token</span><br>  tokens.push(&#123;<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>,<br>    <span class="hljs-attr">name</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>  &#125;);<br>  <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>  chars.length = <span class="hljs-number">0</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 继续缓存当前字符</span><br>  chars.push(char);<br>&#125;<br><span class="hljs-comment">// 消费掉该字符</span><br>str = str.slice(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>状态机当前处于文本状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&lt;&quot;</span>) &#123;<br>  <span class="hljs-comment">// 1. 遇到&lt;，切换到标签开始状态</span><br>  currentState = State.tagOpen;<br>  <span class="hljs-comment">// 2. 从文本状态 迁移 到标签开始状态时，表示文本节点字符已收集完毕，创建文本token</span><br>  tokens.push(&#123;<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>,<br>    <span class="hljs-attr">content</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>  &#125;);<br>  <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>  chars.length = <span class="hljs-number">0</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 缓存当前字符</span><br>  chars.push(char);<br>&#125;<br><span class="hljs-comment">// 消费掉该字符</span><br>str = str.slice(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>状态机当前处于标签结束状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 1. 切换到结束标签名称状态</span><br>currentState = State.tagEndName;<br><span class="hljs-comment">// 2. 缓存当前字符</span><br>chars.push(char);<br><span class="hljs-comment">// 3. 消费掉该字符</span><br>str = str.slice(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>状态机当前处于结束标签名称状态</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&gt;&quot;</span>) &#123;<br>  <span class="hljs-comment">// 1. 标签闭合，切换到初始状态</span><br>  currentState = State.initial;<br>  <span class="hljs-comment">// 2. 保存标签名称</span><br>  tokens.push(&#123;<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;tagEnd&quot;</span>,<br>    <span class="hljs-attr">name</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>  &#125;);<br>  <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>  chars.length = <span class="hljs-number">0</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 缓存当前字符</span><br>  chars.push(char);<br>&#125;<br><span class="hljs-comment">// 消费掉该字符</span><br>str = str.slice(<span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>完整代码</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> State = &#123;<br>  <span class="hljs-attr">initial</span>: <span class="hljs-number">1</span>, <span class="hljs-comment">// 初始状态</span><br>  <span class="hljs-attr">tagOpen</span>: <span class="hljs-number">2</span>, <span class="hljs-comment">// 标签开始状态</span><br>  <span class="hljs-attr">tagName</span>: <span class="hljs-number">3</span>, <span class="hljs-comment">// 标签名称状态</span><br>  <span class="hljs-attr">text</span>: <span class="hljs-number">4</span>, <span class="hljs-comment">// 文本状态</span><br>  <span class="hljs-attr">tagEnd</span>: <span class="hljs-number">5</span>, <span class="hljs-comment">// 结束标签状态</span><br>  <span class="hljs-attr">tagEndName</span>: <span class="hljs-number">6</span>, <span class="hljs-comment">// 结束标签名称状态</span><br>&#125;;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 模版字符串</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@return </span>返回Token数组</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">tokenize</span>(<span class="hljs-params">str</span>) </span>&#123;<br>  <span class="hljs-comment">// 设置当前状态为初始状态</span><br>  <span class="hljs-keyword">let</span> currentState = State.initial;<br>  <span class="hljs-comment">// 保存token的数组</span><br>  <span class="hljs-keyword">const</span> tokens = [];<br>  <span class="hljs-comment">// 缓存当前读取的字符</span><br>  <span class="hljs-keyword">const</span> chars = [];<br>  <span class="hljs-comment">// 当模版字符串读取完毕后退出循环</span><br>  <span class="hljs-keyword">while</span> (str) &#123;<br>    <span class="hljs-comment">// 读取第一个字符</span><br>    <span class="hljs-keyword">const</span> char = str[<span class="hljs-number">0</span>];<br>    <span class="hljs-comment">// 匹配状态机当前处于哪一个状态</span><br>    <span class="hljs-keyword">switch</span> (currentState) &#123;<br>      <span class="hljs-keyword">case</span> State.initial:<br>        <span class="hljs-comment">// 状态机当前处于初始状态</span><br>        <span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&lt;&quot;</span>) &#123;<br>          <span class="hljs-comment">// 1. 状态机切换到标签开始状态</span><br>          currentState = State.tagOpen;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 初始状态下碰到其他字符一律当作文本节点处理</span><br>          <span class="hljs-comment">// 1. 切换到文本状态</span><br>          currentState = State.text;<br>          <span class="hljs-comment">// 2. 将当前读取字符缓存</span><br>          chars.push(char);<br>        &#125;<br>        <span class="hljs-comment">// 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagOpen:<br>        <span class="hljs-comment">// 状态机当前处于标签开始状态</span><br>        <span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;/&quot;</span>) &#123;<br>          <span class="hljs-comment">// 切换到结束标签状态</span><br>          currentState = State.tagEnd;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 1. 切换到标签名称状态</span><br>          currentState = State.tagName;<br>          <span class="hljs-comment">// 2. 缓存当前读取字符</span><br>          chars.push(char);<br>        &#125;<br>        <span class="hljs-comment">// 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagName:<br>        <span class="hljs-comment">// 状态机当前处于标签名称状态</span><br>        <span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&gt;&quot;</span>) &#123;<br>          <span class="hljs-comment">// 1. 遇到字符&gt;，说明标签闭合，切换到初始状态</span><br>          currentState = State.initial;<br>          <span class="hljs-comment">// 2. 把之前缓存的字符拼接并创建为一个token</span><br>          tokens.push(&#123;<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;tag&quot;</span>,<br>            <span class="hljs-attr">name</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>          &#125;);<br>          <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>          chars.length = <span class="hljs-number">0</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 继续缓存当前字符</span><br>          chars.push(char);<br>        &#125;<br>        <span class="hljs-comment">// 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.text:<br>        <span class="hljs-comment">// 状态机当前处于文本状态</span><br>        <span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&lt;&quot;</span>) &#123;<br>          <span class="hljs-comment">// 1. 遇到&lt;，切换到标签开始状态</span><br>          currentState = State.tagOpen;<br>          <span class="hljs-comment">// 2. 从文本状态 迁移 到标签开始状态时，表示文本节点字符已收集完毕，创建文本token</span><br>          tokens.push(&#123;<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;text&quot;</span>,<br>            <span class="hljs-attr">content</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>          &#125;);<br>          <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>          chars.length = <span class="hljs-number">0</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 缓存当前字符</span><br>          chars.push(char);<br>        &#125;<br>        <span class="hljs-comment">// 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagEnd:<br>        <span class="hljs-comment">// 状态机当前处于标签结束状态</span><br>        <span class="hljs-comment">// 1. 切换到结束标签名称状态</span><br>        currentState = State.tagEndName;<br>        <span class="hljs-comment">// 2. 缓存当前字符</span><br>        chars.push(char);<br>        <span class="hljs-comment">// 3. 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> State.tagEndName:<br>        <span class="hljs-comment">// 状态机当前处于结束标签名称状态</span><br>        <span class="hljs-keyword">if</span> (char === <span class="hljs-string">&quot;&gt;&quot;</span>) &#123;<br>          <span class="hljs-comment">// 1. 标签闭合，切换到初始状态</span><br>          currentState = State.initial;<br>          <span class="hljs-comment">// 2. 保存标签名称</span><br>          tokens.push(&#123;<br>            <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;tagEnd&quot;</span>,<br>            <span class="hljs-attr">name</span>: chars.join(<span class="hljs-string">&quot;&quot;</span>),<br>          &#125;);<br>          <span class="hljs-comment">// 3. chars已经被消费了，清空掉</span><br>          chars.length = <span class="hljs-number">0</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 缓存当前字符</span><br>          chars.push(char);<br>        &#125;<br>        <span class="hljs-comment">// 消费掉该字符</span><br>        str = str.slice(<span class="hljs-number">1</span>);<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>  &#125;<br>  <span class="hljs-comment">// 最后返回token数组</span><br>  <span class="hljs-keyword">return</span> tokens;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当模版字符串为<div>这是一段html代码</div>，执行 tokenize 后最终结果为</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json">[<br>  &#123;<span class="hljs-attr">&quot;type&quot;</span>:<span class="hljs-string">&quot;tag&quot;</span>,<span class="hljs-attr">&quot;content&quot;</span>:<span class="hljs-string">&quot;div&quot;</span>&#125;,<br>  &#123;<span class="hljs-attr">&quot;tag&quot;</span>:<span class="hljs-string">&quot;text&quot;</span>,<span class="hljs-attr">&quot;content&quot;</span>:<span class="hljs-string">&quot;这是一段html代码&quot;</span>&#125;,<br>  &#123;<span class="hljs-attr">&quot;type&quot;</span>:<span class="hljs-string">&quot;tagEnd&quot;</span>,<span class="hljs-attr">&quot;content&quot;</span>:<span class="hljs-string">&quot;div&quot;</span>&#125;<br>]<br></code></pre></td></tr></table></figure>
+
+<h1 id="实现parse"><a href="#实现parse" class="headerlink" title="实现parse"></a>实现parse</h1><p>根据tokenize解析出的token来构建AST树<br>构建树的过程需要遍历token数组，从第一个token开始直到处理完所有的token。</p>
+<p>以刚刚的示例：<br>开始标签(div) -&gt; 文本(这是一段html代码) -&gt; 结束标签(div)</p>
+<p>处理逻辑按顺序为：<br>创建div元素节点 -&gt; 创建文本节点，并作为div的子节点插入到父节点中 -&gt; 处理完毕</p>
+<p>如果要解析的元素存在多层节点时，子节点如何找到正确的父节点<br>例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> tokens = tokenize(<span class="hljs-string">&quot;&lt;div&gt;父节点文本&lt;span&gt;子节点文本&lt;/span&gt;&lt;/div&gt;&quot;</span>);<br></code></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json">[<br>  (&#123; type: <span class="hljs-string">&quot;tag&quot;</span>, name: <span class="hljs-string">&quot;div&quot;</span> &#125;,<br>  &#123; type: <span class="hljs-string">&quot;text&quot;</span>, content: <span class="hljs-string">&quot;父节点文本&quot;</span> &#125;,<br>  &#123; type: <span class="hljs-string">&quot;tag&quot;</span>, name: <span class="hljs-string">&quot;span&quot;</span> &#125;,<br>  &#123; type: <span class="hljs-string">&quot;text&quot;</span>, content: <span class="hljs-string">&quot;子节点文本&quot;</span> &#125;,<br>  &#123; type: <span class="hljs-string">&quot;tagEnd&quot;</span>, name: <span class="hljs-string">&quot;span&quot;</span> &#125;,<br>  &#123; type: <span class="hljs-string">&quot;tagEnd&quot;</span>, name: <span class="hljs-string">&quot;div&quot;</span> &#125;),<br>]<br></code></pre></td></tr></table></figure>
+<p>我们可以用数组来模拟栈，通过后进先出的原理来实现，运行逻辑：<br>创建stack数组，遍历tokens<br>第一次循环：开始标签div，创建div节点，并推入stack中，此时stack = [div]<br>第二次循环：文本，创建文本节点，从stack中获取最后一个元素（顶部元素），将该节点作为子节点插入到div中<br>第三次循环：开始标签span，创建span节点，并推入stack中，此时stack = [div, span]<br>第四次循环：文本，创建文本节点，从stack中获取最后一个元素（顶部元素），将该节点作为子节点插入到span中<br>第五次循环：结束标签span，从stack中弹出尾部节点，此时stack = [div]<br>第六次循环：结束标签div，从stack中弹出尾部节点，此时stack = []</p>
+<p>ok,思路清楚了之后我们来写实现的代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 根据模版字符串解析AST</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param </span>str 模版字符串</span><br><span class="hljs-comment"> */</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">parse</span>(<span class="hljs-params">str</span>) </span>&#123;<br>  <span class="hljs-comment">// 解析token</span><br>  <span class="hljs-keyword">const</span> tokens = tokenize(str);<br>  <span class="hljs-comment">// 创建根节点</span><br>  <span class="hljs-keyword">const</span> root = &#123;<br>    <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;root&quot;</span>,<br>    <span class="hljs-attr">children</span>: [],<br>  &#125;;<br>  <span class="hljs-comment">// 创建 elementStack 栈，起初只有 Root 根节点</span><br>  <span class="hljs-keyword">const</span> elementStack = [root]<br>  <span class="hljs-comment">// 遍历tokens</span><br>  <span class="hljs-keyword">while</span> (tokens.length) &#123;<br>    <span class="hljs-keyword">const</span> token = tokens[<span class="hljs-number">0</span>];<br>    <span class="hljs-comment">// 获取当前栈顶节点作为父节点 parent</span><br>    <span class="hljs-keyword">const</span> parent = elementStack[elementStack.length - <span class="hljs-number">1</span>]<br>    <span class="hljs-keyword">switch</span> (token.type) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;tag&quot;</span>:<br>        <span class="hljs-comment">// 开始标签则创建 Element 类型的AST节点</span><br>        <span class="hljs-keyword">const</span> elementNode = &#123;<br>          <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;Element&quot;</span>,<br>          <span class="hljs-attr">tag</span>: token.name,<br>          <span class="hljs-attr">children</span>: []<br>        &#125;;<br>        <span class="hljs-comment">// 将其添加到父级节点的 children 中</span><br>        parent.children.push(elementNode);<br>        <span class="hljs-comment">// 将当前节点压入栈</span><br>        elementStack.push(elementNode);<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;text&quot;</span>:<br>        <span class="hljs-comment">// 创建文本节点</span><br>        <span class="hljs-keyword">const</span> textNode = &#123;<br>          <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;Text&quot;</span>,<br>          <span class="hljs-attr">content</span>: token.content<br>        &#125;<br>        <span class="hljs-comment">// 将其插入到父节点中</span><br>        parent.children.push(textNode)<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;tagEnd&quot;</span>:<br>        <span class="hljs-comment">// 遇到结束标签，弹出栈顶元素</span><br>        elementStack.pop();<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-comment">// 消费掉token</span><br>    tokens.shift()<br>  &#125;<br>  <span class="hljs-keyword">return</span> root<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>最后生成的AST结构如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs json">&#123;<br>    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;root&quot;</span>, <br>    <span class="hljs-attr">&quot;children&quot;</span>: [<br>        &#123;<br>            <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Element&quot;</span>, <br>            <span class="hljs-attr">&quot;tag&quot;</span>: <span class="hljs-string">&quot;div&quot;</span>, <br>            <span class="hljs-attr">&quot;children&quot;</span>: [<br>                &#123;<br>                    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Text&quot;</span>, <br>                    <span class="hljs-attr">&quot;content&quot;</span>: <span class="hljs-string">&quot;父节点文本&quot;</span><br>                &#125;, <br>                &#123;<br>                    <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Element&quot;</span>, <br>                    <span class="hljs-attr">&quot;tag&quot;</span>: <span class="hljs-string">&quot;span&quot;</span>, <br>                    <span class="hljs-attr">&quot;children&quot;</span>: [<br>                        &#123;<br>                            <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;Text&quot;</span>, <br>                            <span class="hljs-attr">&quot;content&quot;</span>: <span class="hljs-string">&quot;子节点文本&quot;</span><br>                        &#125;<br>                    ]<br>                &#125;<br>            ]<br>        &#125;<br>    ]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>github代码地址：<a href="https://github.com/moring-abyss/mini-vue" target="_blank" style="color: blue;text-decoration: underline;">mini-vue</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/10/e3057f9d2450/">
+                        <span class="hidden-mobile">编译原理学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+    
+
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  
+    <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+  
+  
+    <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+  
+  
+    <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+  
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+        typing(title);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

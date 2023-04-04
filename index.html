@@ -59,7 +59,7 @@
 
 
 <body>
-  <header style="height: 100vh;">
+  <header style="height: 30vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -156,10 +156,6 @@
           </div>
 
           
-            <div class="scroll-down-bar">
-              <i class="iconfont icon-arrowdown"></i>
-            </div>
-          
         </div>
       </div>
     </div>
@@ -169,7 +165,7 @@
     
       <div class="container nopadding-x-md">
         <div class="py-5" id="board"
-          style=margin-top:0>
+          >
           
           <div class="container">
             <div class="row">
@@ -183,15 +179,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/10/14/13/" target="_self">
-          vue源码学习笔记(3)-打包构建
+        <a href="/2023/04/03/9606ccc32624/" target="_self">
+          笔记：从零实现一个简单的vue-1
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/10/14/13/" target="_self">
+        <a href="/2023/04/03/9606ccc32624/" target="_self">
           
-          vue源码版本:3.2.40  接上篇，编译部分已经完结，开始看下构建部分。vue的构建是由rollup来进行的，那从rollup.config.js开始学习。  不熟悉rollup，先看下官方配置文档  ok，大致浏览熟悉了，先在之前搭建的项目中安装rollup。 install rollup1pnpm add -D -w rollup  创建rollup.config.js不同的子包打包的配
+          Vue 是一个声明式的 UI 框架，简单来理解什么是声明式，即为你声明你要什么，不需要关心内部具体的实现，只需要得到结果。例如：这段代码在 vue 中表示一个绑定了点击事件的 div，不需要关心事件是如何绑定的 12345678910&lt;script setup&gt;&#x2F;&#x2F; 函数function handler() &amp;#123;  console.log(&quot;click&quot;)&amp;
         </a>
       </p>
 
@@ -199,19 +195,12 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-14 18:23" pubdate>
-              2022-10-14
+            <time datetime="2023-04-03 11:14" pubdate>
+              2023-04-03
             </time>
           </div>
         
         
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">vue源码学习笔记</a>
-            
-          </div>
         
       </div>
     </article>
@@ -223,93 +212,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/10/14/12/" target="_self">
-          vue源码学习笔记(2)-编译脚本
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/10/14/12/" target="_self">
-          
-          vue源码版本:3.2.40  源码编译日常看package的build命令，可以看到执行的编译脚本是scripts目录下的build.js  这里只关注部分关键代码  编译执行入口方法-scripts&#x2F;build.js 12345678910111213&#x2F;* ... *&#x2F;run()async function run() &amp;#123;  &#x2F;* ... *&#x2F;  if (!targets.leng
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-14 15:02" pubdate>
-              2022-10-14
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">vue源码学习笔记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/10/14/11/" target="_self">
-          vue源码学习笔记(1)-代码管理
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/10/14/11/" target="_self">
-          
-          vue3的代码组织Vue 3.x的源码是通过monorepo的方式维护的，这里我们自己编码搭建一个monorepo工程来更好的理解vue代码库的组织实现。  vue的package.json中的配置，照着来  123&amp;#123;  &quot;packageManager&quot;: &quot;pnpm@7.1.0&quot;,&amp;#125;  什么是monorepo?  搭建monorepo工
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-14 12:58" pubdate>
-              2022-10-14
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/vue%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">vue源码学习笔记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/09/10/8/" target="_self">
+        <a href="/2022/09/10/e3057f9d2450/" target="_self">
           编译原理学习笔记
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/09/10/8/" target="_self">
+        <a href="/2022/09/10/e3057f9d2450/" target="_self">
           
           简单的加减乘除计算器  完整演示地址 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949
         </a>
@@ -343,13 +252,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/02/24/9/" target="_self">
-          jenkins
+        <a href="/2022/02/24/a17a8e378bf6/" target="_self">
+          jenkins安装
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2022/02/24/9/" target="_self">
+        <a href="/2022/02/24/a17a8e378bf6/" target="_self">
           
           yum安装jenkins添加jenkins repo sudo wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;jenkins.repo https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.repo  导入jenkins公钥 sudo rpm –import https:&#x2F;&#x2F;pkg.jenkins.io&#x2F;redhat-stable&#x2F;jenkins.io.ke
         </a>
@@ -376,53 +285,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2022/01/09/3/" target="_self">
-          React-setState深入
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/01/09/3/" target="_self">
-          
-          React-18.0.0  面试经常问到 setState 是同步还是异步，这里就这个问题研究下源码实现，调试并记录。 setState 实现ReactFiberClassComponent.new调用 classComponentUpdater.enqueueSetState，该方法内部实现会在 fiber 节点上挂载一个任务队列：updateQueue，数据结构参考： 12345678910
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-01-09 13:00" pubdate>
-              2022-01-09
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/React/">React</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/12/22/1/" target="_self">
+        <a href="/2021/12/22/b95dfc329758/" target="_self">
           阿里云视频点播sdk扩展
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/12/22/1/" target="_self">
+        <a href="/2021/12/22/b95dfc329758/" target="_self">
           
           SDK：Javascript SDK   version-1.5.2阿里云视频点播Javascript SDK文档 问题：该版本不支持指定单个文件暂停上传 or 指定目标文件开始上传。sdk提供的几个操作单文件的api支持不到这么细节的操作，deleteFile&#x2F;cancelFile&#x2F;resumeFile 源码解析：  提取sdk代码中的一些关键枚举值  123456789101112131415
         </a>
@@ -449,13 +318,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
-        <a href="/2021/12/22/2/" target="_self">
+        <a href="/2021/12/22/c7256633e515/" target="_self">
           How to disable predictive scrolling
         </a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/12/22/2/" target="_self">
+        <a href="/2021/12/22/c7256633e515/" target="_self">
           
           最近做一个全屏滚动的效果，类似 fullPage，之所以没用一个因为 fullPage 的开源协议是 GPL，另一个是需求上没有 fullPage 那么多兼容支持，就想着自己写一个。 想法挺好，大致的实现思路也简单：  body 或者外层套一个 div 设置高宽 100vw,100vh，并且禁止溢出 每一屏一个容器 container，并且使用一个 wrapper 容器包裹起来 初始化时设置 co
         </a>
