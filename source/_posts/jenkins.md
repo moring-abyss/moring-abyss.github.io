@@ -1,5 +1,5 @@
 ---
-title: jenkins
+title: jenkins安装
 ---
 
 # yum安装jenkins
